@@ -40,7 +40,7 @@ public class CategoriesDaoImpl implements CategoriesDao {
 			resp.setStatus("Success");
 		}
 		else {
-			resp.setMessage("Data Can Not Be Saved.");
+			resp.setMessage("Data Can Not Be Saved");
 			resp.setResult("0");
 			resp.setStatus("Error");
 		}
