@@ -132,5 +132,23 @@ public class DBOperations {
 		}
     	return result;
     }
+    
+    public String getSingleColumnStoredProcedureData(String procName, List<ParamList> paramList) {
+        StoredProcedureQuery storedProcedureQuery = entityManager.createStoredProcedureQuery(procName);
+
+        if (paramList != null) {
+            for (ParamList parameter : paramList) {
+                storedProcedureQuery.registerStoredProcedureParameter(parameter.getParamName(), parameter.getType(),
+                        ParameterMode.IN);
+                storedProcedureQuery.setParameter(parameter.getParamName(), parameter.getParamValue());
+            }
+        }
+
+        storedProcedureQuery.execute();
+        
+        Object result = storedProcedureQuery.getSingleResult();
+        
+        return result != null ? result.toString() : null;
+    }
 
 }

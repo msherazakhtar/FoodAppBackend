@@ -8,6 +8,9 @@ import com.foodapi.foodapp.models.ORMSaveUsers;
 import com.foodapi.foodapp.models.ParamList;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,28 +21,43 @@ public class UserDaoImpl implements UserDao {
 
     @Autowired
     DBOperations db;
+
     @Override
     public ORMResponse saveUser(ORMSaveUsers ormUser) {
         Integer result = 0;
+        List<ParamList> lstParam = new ArrayList<ParamList>();
+        lstParam.add(new ParamList("email", ormUser.getEmail(), String.class));
+        String total = db.getSingleColumnStoredProcedureData("spCheckUserAccount", lstParam);
         ORMResponse resp  =new ORMResponse();
-        if(ormUser.getUser_id() ==null || ormUser.getUser_id().toString().equals(""))
+        if(!total.equals("0"))
         {
-            result=  db.saveEntity(ormUser, DBOperations.Option.ADD);
+        	resp.setStatus("Not Allowed");
+            resp.setMessage("This Email Is Already Registered");
+            resp.setResult(result.toString());
+            return resp;
         }
         else {
-            result =  db.saveEntity(ormUser, DBOperations.Option.EDIT);
+        	ormUser.setPassword(new BCryptPasswordEncoder().encode(ormUser.getPassword()));
+            if(ormUser.getUser_id() ==null || ormUser.getUser_id().toString().equals(""))
+            {
+                result=  db.saveEntity(ormUser, DBOperations.Option.ADD);
+            }
+            else {
+                result =  db.saveEntity(ormUser, DBOperations.Option.EDIT);
+            }
+            if(result == 0) {
+                resp.setStatus("Error");
+                resp.setMessage("Failed To Save The Entity");
+                resp.setResult(result.toString());
+            }
+            else
+            {
+                resp.setStatus("Success");
+                resp.setMessage("Data Saved Successfully");
+                resp.setResult(result.toString());
+            }
         }
-        if(result == 0) {
-            resp.setStatus("Error");
-            resp.setMessage("Failed To Save The Entity");
-            resp.setResult(result.toString());
-        }
-        else
-        {
-            resp.setStatus("Success");
-            resp.setMessage("Data Saved Successfully");
-            resp.setResult(result.toString());
-        }
+        
     return resp;
     }
 
