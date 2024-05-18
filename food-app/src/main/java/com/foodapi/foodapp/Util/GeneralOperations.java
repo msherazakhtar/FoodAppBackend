@@ -2,6 +2,7 @@ package com.foodapi.foodapp.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,5 +34,17 @@ public class GeneralOperations {
 
 	        List<ORMValidateUser> validatedUser = db.getStoredProcedureData("spValidateUser", ORMValidateUser.class,paramList);
 	        return validatedUser;
+		}
+		public Long genRandomNumber(Long maxNumber) {
+			Long number = (long)0;
+			if(maxNumber>0)
+			{
+				Random generator = new Random();
+				number = generator.nextLong(maxNumber);
+			}
+			else {
+				return null;
+			}
+			return number;
 		}
 }

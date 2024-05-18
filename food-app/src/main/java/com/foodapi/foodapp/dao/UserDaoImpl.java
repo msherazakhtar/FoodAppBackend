@@ -1,5 +1,7 @@
 package com.foodapi.foodapp.dao;
 
+import com.foodapi.foodapp.Util.EmailUtil;
+import com.foodapi.foodapp.Util.GeneralOperations;
 import com.foodapi.foodapp.db.DBOperations;
 import com.foodapi.foodapp.models.ORMGetUserDetails;
 import com.foodapi.foodapp.models.ORMGetUsers;
@@ -21,7 +23,8 @@ public class UserDaoImpl implements UserDao {
 
     @Autowired
     DBOperations db;
-
+    @Autowired
+    GeneralOperations generalOperations;
     @Override
     public ORMResponse saveUser(ORMSaveUsers ormUser) {
         Integer result = 0;
@@ -40,6 +43,11 @@ public class UserDaoImpl implements UserDao {
         	ormUser.setPassword(new BCryptPasswordEncoder().encode(ormUser.getPassword()));
             if(ormUser.getUser_id() ==null || ormUser.getUser_id().toString().equals(""))
             {
+            	Long verificationCode = generalOperations.genRandomNumber((long)999999);
+            	String emailText =  "Please use code "+verificationCode+" to verify you account.";
+            	EmailUtil  email =  new EmailUtil();
+            	email.sendEmail("MyFoodApp", ormUser.getEmail(), "Verification Code", emailText);
+            	ormUser.setVerification_code(verificationCode.toString());
                 result=  db.saveEntity(ormUser, DBOperations.Option.ADD);
             }
             else {

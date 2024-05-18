@@ -24,6 +24,7 @@ public class ORMSaveUsers {
     private Boolean deleted;
     private String system_ip;
     private Long account_id;
+    private String verification_code;
 	public Long getUser_id() {
 		return user_id;
 	}
@@ -127,6 +128,12 @@ public class ORMSaveUsers {
 	}
 	public void setAccount_id(Long account_id) {
 		this.account_id = account_id;
+	}
+	public String getVerification_code() {
+		return verification_code;
+	}
+	public void setVerification_code(String verification_code) {
+		this.verification_code = verification_code;
 	}
 
 
