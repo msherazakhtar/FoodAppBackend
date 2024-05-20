@@ -40,11 +40,13 @@ public class UserDaoImpl implements UserDao {
             return resp;
         }
         else {
+        	
+        	//TODO: Encrytp password from frontend
         	ormUser.setPassword(new BCryptPasswordEncoder().encode(ormUser.getPassword()));
             if(ormUser.getUser_id() ==null || ormUser.getUser_id().toString().equals(""))
             {
             	Long verificationCode = generalOperations.genRandomNumber((long)999999);
-            	String emailText =  "Please use code "+verificationCode+" to verify you account.";
+            	String emailText =  "Please use code "+verificationCode+" to verify your account.";
             	EmailUtil  email =  new EmailUtil();
             	email.sendEmail("MyFoodApp", ormUser.getEmail(), "Verification Code", emailText);
             	ormUser.setVerification_code(verificationCode.toString());
