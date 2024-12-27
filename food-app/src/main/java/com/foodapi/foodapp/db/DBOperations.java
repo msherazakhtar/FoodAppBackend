@@ -1,8 +1,6 @@
 package com.foodapi.foodapp.db;
 
 import com.foodapi.foodapp.Util.GeneralOperations;
-import com.foodapi.foodapp.dao.GeneralDao;
-import com.foodapi.foodapp.dao.GeneralDaoImpl;
 import com.foodapi.foodapp.models.ParamList;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
@@ -11,8 +9,6 @@ import jakarta.persistence.Query;
 import jakarta.persistence.StoredProcedureQuery;
 import jakarta.transaction.Transactional;
 
-import org.hibernate.query.NativeQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,23 +95,39 @@ public class DBOperations {
     
     @Transactional
     public int executeUpdateProcedure(String procName, List<ParamList> paramList) {
+        int result = 0;
+
         try {
             StoredProcedureQuery storedProcedureQuery = entityManager.createStoredProcedureQuery(procName);
+            String procedureQuery = "";
 
             if (paramList != null) {
                 for (ParamList parameter : paramList) {
                     storedProcedureQuery.registerStoredProcedureParameter(parameter.getParamName(), parameter.getType(), ParameterMode.IN);
                     storedProcedureQuery.setParameter(parameter.getParamName(), parameter.getParamValue());
+                    if(procedureQuery.equals(""))
+                    {
+                    	procedureQuery = parameter.getParamValue();
+                    }
+                    else {
+    					procedureQuery += ","+parameter.getParamValue();
+    				}
                 }
             }
-            System.out.println(storedProcedureQuery);
-            return storedProcedureQuery.executeUpdate();
-            // Return 1 to indicate successful execution
+            System.out.println(procName+"("+procedureQuery+")");
+             result = storedProcedureQuery.executeUpdate();
+//            if(res)
+//            {
+//            	result = 1;// Return 1 to indicate successful execution
+//            	return result;
+//            }
+            
         } catch (Exception e) {
             // Log the exception if you need to
-            // logger.error("Error executing update procedure: " + procName, e);
-            return 0;  // Return 0 to indicate failure
-        }
+             System.out.println("Error executing update procedure: " + procName+"\n"+ e);
+            return result;       
+            }
+        return result;
     }
     
     @Transactional

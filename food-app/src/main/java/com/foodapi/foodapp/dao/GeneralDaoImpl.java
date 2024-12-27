@@ -1,9 +1,6 @@
 package com.foodapi.foodapp.dao;
 
 import com.foodapi.foodapp.db.DBOperations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import com.foodapi.foodapp.models.ORMDeleteRecord;
 import com.foodapi.foodapp.models.ParamList;
 

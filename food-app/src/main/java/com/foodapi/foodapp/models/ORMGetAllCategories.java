@@ -1,7 +1,9 @@
 package com.foodapi.foodapp.models;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+@Hidden
 
 @Entity
 public class ORMGetAllCategories {

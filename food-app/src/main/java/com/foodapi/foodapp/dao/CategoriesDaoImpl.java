@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.foodapi.foodapp.Util.OperationalEnums;
+import com.foodapi.foodapp.Util.GeneralOperations;
 import com.foodapi.foodapp.db.DBOperations;
 import com.foodapi.foodapp.db.DBOperations.Option;
 import com.foodapi.foodapp.models.ORMGetAllCategories;
@@ -18,12 +20,14 @@ import com.foodapi.foodapp.models.ParamList;
 public class CategoriesDaoImpl implements CategoriesDao {
 	@Autowired
 	DBOperations db;
+	@Autowired
+	GeneralOperations generalOperations;
 
 	@Override
 	public ORMResponse addCategory(ORMSaveCategory orm) {
 		
 		
-		int result = 0;
+		Integer result = 0;
 		ORMResponse resp = new ORMResponse();
 		if(orm.getCategory_id() == null || orm.getCategory_id().toString().equals("")) 
 		{
@@ -33,17 +37,7 @@ public class CategoriesDaoImpl implements CategoriesDao {
 		{
 			result = db.saveEntity(orm, Option.EDIT);
 		}
-		if(result == 1)
-		{
-			resp.setMessage("Data Saved Successfully.");
-			resp.setResult("1");
-			resp.setStatus("Success");
-		}
-		else {
-			resp.setMessage("Data Can Not Be Saved");
-			resp.setResult("0");
-			resp.setStatus("Error");
-		}
+		resp = generalOperations.setResponse("Category", OperationalEnums.Save, result.toString());
 		return resp;
 	}
 

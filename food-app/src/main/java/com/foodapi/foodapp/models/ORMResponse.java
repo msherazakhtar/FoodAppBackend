@@ -1,8 +1,10 @@
 package com.foodapi.foodapp.models;
 
+import com.foodapi.foodapp.Util.ResponseEnums;
+
 public class ORMResponse {
     private String result;
-    private String status;
+    private ResponseEnums status;
     private String message;
 
     public String getResult() {
@@ -13,15 +15,17 @@ public class ORMResponse {
         this.result = result;
     }
 
-    public String getStatus() {
-        return status;
-    }
+   
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public ResponseEnums getStatus() {
+		return status;
+	}
 
-    public String getMessage() {
+	public void setStatus(ResponseEnums status) {
+		this.status = status;
+	}
+
+	public String getMessage() {
         return message;
     }
 

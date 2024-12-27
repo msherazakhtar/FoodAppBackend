@@ -6,9 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.foodapi.foodapp.Util.OperationalEnums;
+import com.foodapi.foodapp.Util.GeneralOperations;
 import com.foodapi.foodapp.db.DBOperations;
 import com.foodapi.foodapp.models.ORMGetOrdersList;
-import com.foodapi.foodapp.models.ORMGetUsers;
 import com.foodapi.foodapp.models.ORMResponse;
 import com.foodapi.foodapp.models.ORMSaveOrder;
 import com.foodapi.foodapp.models.ParamList;
@@ -17,6 +18,8 @@ import com.foodapi.foodapp.models.ParamList;
 public class OrderDaoImpl implements OrderDao {
 	@Autowired
 	DBOperations db;
+	@Autowired
+    GeneralOperations generalOperations;
 	@Override
 	public ORMResponse saveOrder(ORMSaveOrder orm) {
 		 Integer result = 0;
@@ -28,18 +31,8 @@ public class OrderDaoImpl implements OrderDao {
 	        else {
 	            result =  db.saveEntity(orm, DBOperations.Option.EDIT);
 	        }
-	        if(result == 0) {
-	            resp.setStatus("Error");
-	            resp.setMessage("Failed To Save The Entity");
-	            resp.setResult(result.toString());
-	        }
-	        else
-	        {
-	            resp.setStatus("Success");
-	            resp.setMessage("Data Saved Successfully");
-	            resp.setResult(orm.getOrder_id().toString());
-	        }
-	    return resp;
+	        resp = generalOperations.setResponse("Category", OperationalEnums.Save, result.toString());
+			return resp;
 	}
 	@Override
 	public List<ORMGetOrdersList> getOrdersList(String account_id) {

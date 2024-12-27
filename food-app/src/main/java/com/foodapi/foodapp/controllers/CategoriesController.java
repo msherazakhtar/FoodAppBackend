@@ -4,15 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.foodapi.foodapp.Services.CategoriesService;
 import com.foodapi.foodapp.Services.GeneralService;
+import com.foodapi.foodapp.Util.OperationalEnums;
+import com.foodapi.foodapp.Util.GeneralOperations;
 import com.foodapi.foodapp.models.ORMDeleteRecord;
 import com.foodapi.foodapp.models.ORMGetAllCategories;
 import com.foodapi.foodapp.models.ORMGetCategoryDetails;
@@ -26,23 +29,25 @@ public class CategoriesController {
 	CategoriesService categoriesService;
 	@Autowired
 	GeneralService generalService;
+	@Autowired
+	GeneralOperations generalOperations;
 	
 	
-	@RequestMapping("/addCategory")
+	@PostMapping("/addCategory")
 	public ResponseEntity<ORMResponse> addCategory(@RequestBody ORMSaveCategory orm)
 	{
 		ORMResponse resp = categoriesService.addCategory(orm);
 		return new ResponseEntity<ORMResponse>(resp,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/getCategories/{account_id}")
+	@GetMapping("/getCategories/{account_id}")
 	public List<ORMGetAllCategories> getCategories(@PathVariable(value = "account_id") String account_id)
 	{
 		List<ORMGetAllCategories> lst = categoriesService.getCategories(account_id);
 		return lst;
 	}
 	
-	@RequestMapping("/getCategoryDetails/{category_id}")
+	@GetMapping("/getCategoryDetails/{category_id}")
 	public List<ORMGetCategoryDetails> getCategoryDetails(@PathVariable(value = "category_id") String category_id)
 	{
 		List<ORMGetCategoryDetails> details = categoriesService.getCategoryDetails(category_id);
@@ -50,24 +55,14 @@ public class CategoriesController {
 	}
 	
 	
-	 @RequestMapping("/deleteCategory")
+	 @PostMapping("/deleteCategory")
 	    public  ResponseEntity<ORMResponse> deleteCategory(@RequestBody ORMDeleteRecord ormDeleteRecord)
 	    {
 	        ormDeleteRecord.setTable_name("categories");
 	        ormDeleteRecord.setColumn_name("category_id");
 	        ORMResponse resp = new ORMResponse();
-	          int result = generalService.deleteRecord(ormDeleteRecord);
-	          if (result == 1)
-	          {
-	              resp.setResult("1");
-	              resp.setMessage("Record Deleted");
-	              resp.setStatus("Success");
-	          }
-	          else {
-	              resp.setResult("0");
-	              resp.setMessage("Record Can't Be Deleted");
-	              resp.setStatus("Error");
-	          }
+	          Integer result = generalService.deleteRecord(ormDeleteRecord);
+	          resp = generalOperations.setResponse("Category", OperationalEnums.Delete, result.toString());
 	        return  new ResponseEntity<>(resp,HttpStatus.OK);
 
 	    }

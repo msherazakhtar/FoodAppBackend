@@ -1,5 +1,7 @@
 package com.foodapi.foodapp.dao;
 
+import com.foodapi.foodapp.Util.OperationalEnums;
+import com.foodapi.foodapp.Util.GeneralOperations;
 import com.foodapi.foodapp.db.DBOperations;
 import com.foodapi.foodapp.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import java.util.List;
 public class RestaurantDaoImpl implements RestaurantDao{
     @Autowired
     DBOperations db;
+    @Autowired
+    GeneralOperations generalOperations;
     @Override
     public List<ORMGetAllRestaurants> getAllRestaurants(String account_id) {
         List<ParamList> paramList = new ArrayList<>();
@@ -35,18 +39,8 @@ public class RestaurantDaoImpl implements RestaurantDao{
               result =  db.saveEntity(orm, DBOperations.Option.EDIT);
             }
         }
-        if(result ==0)
-        {
-            resp.setStatus("Error");
-            resp.setMessage("Failed To Save The Entity");
-            resp.setResult(result.toString());
-        }
-        else {
-            resp.setStatus("Success");
-            resp.setMessage("Data Saved Successfully");
-            resp.setResult(result.toString());
-        }
-        return resp;
+        resp = generalOperations.setResponse("Category", OperationalEnums.Save, result.toString());
+		return resp;
 
     }
 

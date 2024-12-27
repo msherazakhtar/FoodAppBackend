@@ -2,12 +2,20 @@ package com.foodapi.foodapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
+
 
 @SpringBootApplication
-public class FoodAppApplication {
-
+public class FoodAppApplication extends SpringBootServletInitializer{
+	@Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(FoodAppApplication.class);
+    }
 	public static void main(String[] args) {
 		SpringApplication.run(FoodAppApplication.class, args);
 	}
 
 }
+
