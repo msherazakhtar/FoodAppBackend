@@ -14,8 +14,8 @@ public class EmailUtil {
 	public String sendEmail(String from, String to, String subject, String messageText) {
     	System.out.println("Sending Verification Email......");
 
-		final String username = "sheraz321089@gmail.com";
-		final String password = "veok msst ppym fjad";
+		final String username = "";//Your mail username
+		final String password = "";//Your mail password
 
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
